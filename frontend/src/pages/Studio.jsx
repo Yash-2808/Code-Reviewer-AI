@@ -659,18 +659,40 @@ const Studio = ({ editorTheme = "twilight" }) => {
                         </Text>
                       </VStack>
                     ) : debugResult ? (
-                      <Flex direction="column" gap="4" maxH="480px" overflowY="auto" pr="1">
-                        <Alert status={debugResult.hasErrors ? "warning" : "success"} borderRadius="xl" bg={debugResult.hasErrors ? "rgba(254, 202, 87, 0.12)" : "rgba(0, 210, 211, 0.12)"} border="1px solid" borderColor={debugResult.hasErrors ? "rgba(254, 202, 87, 0.35)" : "rgba(0, 210, 211, 0.35)"}>
-                          <AlertIcon color={debugResult.hasErrors ? "#FECA57" : "#00D2D3"} />
-                          <Box>
-                            <AlertTitle fontSize="sm" fontWeight="800" color={debugResult.hasErrors ? "#FECA57" : "#00D2D3"}>
-                              {debugResult.hasErrors ? `Found ${debugResult.bugs.length} Issues in Code` : "No Major Issues Found!"}
-                            </AlertTitle>
-                            <AlertDescription fontSize="xs" color="gray.300" display="block" mt="0.5">
-                              {debugResult.hasErrors ? "Inspect the detected bugs and the suggested fix below." : "Your code logic looks sound."}
-                            </AlertDescription>
-                          </Box>
-                        </Alert>
+                      <Flex direction="column" gap="4" maxH="550px" overflowY="auto" pr="1">
+                        <Box
+                          p="4"
+                          borderRadius="xl"
+                          bg={debugResult.hasErrors ? "rgba(254, 202, 87, 0.12)" : "rgba(0, 210, 211, 0.12)"}
+                          border="1px solid"
+                          borderColor={debugResult.hasErrors ? "rgba(254, 202, 87, 0.4)" : "rgba(0, 210, 211, 0.4)"}
+                          boxShadow={debugResult.hasErrors ? "0 4px 20px rgba(254, 202, 87, 0.08)" : "0 4px 20px rgba(0, 210, 211, 0.08)"}
+                        >
+                          <Flex align="center" gap="3.5">
+                            <Box
+                              flexShrink={0}
+                              w="36px"
+                              h="36px"
+                              borderRadius="full"
+                              display="flex"
+                              alignItems="center"
+                              justifyContent="center"
+                              bg={debugResult.hasErrors ? "rgba(254, 202, 87, 0.25)" : "rgba(0, 210, 211, 0.25)"}
+                              color={debugResult.hasErrors ? "#FECA57" : "#00D2D3"}
+                              fontSize="16px"
+                            >
+                              {debugResult.hasErrors ? <FaBolt /> : <FaCheck />}
+                            </Box>
+                            <Box>
+                              <Text fontSize="sm" fontWeight="800" color={debugResult.hasErrors ? "#FECA57" : "#00D2D3"}>
+                                {debugResult.hasErrors ? `Found ${debugResult.bugs.length} Issues in Code` : "No Major Issues Found! 🎉"}
+                              </Text>
+                              <Text fontSize="xs" color="#CBD5E1" fontWeight="500" mt="0.5" lineHeight="1.5">
+                                {debugResult.hasErrors ? "Inspect the detected bugs and the suggested fix below." : "Your code logic looks sound! No syntax errors or logical bugs detected."}
+                              </Text>
+                            </Box>
+                          </Flex>
+                        </Box>
 
                         {debugResult.hasErrors && debugResult.bugs.length > 0 && (
                           <VStack align="stretch" spacing="2.5">
