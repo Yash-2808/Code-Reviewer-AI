@@ -1,32 +1,46 @@
 # CodeReviewer AI - Intelligent Code Analysis & Review Platform
 
-A full-stack, production-grade code analysis platform powered by **Google Gemini AI**. CodeReviewer AI provides real-time AI code conversion, debugging, and code quality scoring alongside a complete, secure, custom **Authentication & Authorization** system, private review histories, user dashboards, and role-based administration.
+<div align="center">
+
+![CodeReviewer AI Logo](https://img.shields.io/badge/CodeReviewer-AI-FF5722?style=for-the-badge&logo=codeforces&logoColor=white)
+![React](https://img.shields.io/badge/React_18-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![NodeJS](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB_Atlas-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
+![Google Gemini](https://img.shields.io/badge/Google_Gemini_AI-4285F4?style=for-the-badge&logo=google&logoColor=white)
+![Render](https://img.shields.io/badge/Render-Hosted-46E3B7?style=for-the-badge&logo=render&logoColor=white)
+
+A full-stack, production-grade AI code analysis platform powered by **Google Gemini AI**. CodeReviewer AI provides real-time AI code conversion, debugging, and code quality scoring alongside a secure **Authentication & Authorization** system, private review histories, personalized developer dashboards, and cloud deployment on **Render**.
+
+[Live Demo](https://code-reviewer-ai-1-vpic.onrender.com) • [Report Bug](https://github.com/Yash-2808/Code-Reviewer-AI/issues) • [Request Feature](https://github.com/Yash-2808/Code-Reviewer-AI/issues)
+
+</div>
 
 ---
 
-## ✨ Features
+## ✨ Key Features
 
-- 🔐 **Custom Authentication & Authorization**:
+- 🔐 **Authentication & Authorization**:
   - Secure registration & login with **bcryptjs** password hashing (12 salt rounds).
-  - Stateless **JWT (JSON Web Token)** authentication (1-day expiration).
-  - Role-based authorization (`user` and `admin` roles).
-  - Complete user data isolation — users only see and manage their own history.
-- ⚡ **AI-Powered Code Tools**:
-  - **Code Conversion**: Seamlessly convert source code across languages.
-  - **Code Debugger**: In-depth bug detection with line numbers, severity flags, detailed explanations, and automated fixes.
-  - **Code Quality Assessment**: Detailed rubric scoring with actionable quality metrics.
-  - Model resilience with multi-model fallback (`gemini-2.5-flash`, `gemini-2.0-flash`, `gemini-1.5-flash`).
-- 📊 **Personalized Dashboard & Statistics**:
-  - Total reviews performed, conversion counts, debugging reports, and average code quality score.
-  - Quick action shortcuts and recent activity feed.
+  - Stateless **JWT (JSON Web Token)** Bearer token authorization.
+  - Role-based access control (`user` and `admin` roles).
+  - Strict user data isolation — review records and activity histories are strictly segregated per user account.
+- ⚡ **AI-Powered Code Studio**:
+  - **Code Converter**: Seamlessly convert source code across languages (JavaScript, Python, C++, Java, Rust, Go, TypeScript, and more).
+  - **Code Debugger**: Deep bug detection with line numbers, severity tags, root-cause explanations, and instant fixes.
+  - **Code Quality Assessment**: Multi-category scorecard metrics covering readability, performance, security, maintainability, and best practices.
+  - Multi-model resilience with automated fallback across Gemini model tiers.
+- 📊 **Developer Dashboard & Statistics**:
+  - Total reviews performed, conversion metrics, debugging reports, and average code quality scores.
+  - Quick action shortcuts and real-time activity feed.
 - 📜 **Private Review History**:
-  - Searchable, filterable review archive.
-  - Detail modal inspection and single-click review deletion.
-- 👤 **User Profile & Custom Gemini API Key**:
-  - View account details, role badge, and registration timestamp.
-  - Override server Gemini API keys on a per-user basis via `x-api-key`.
-- 🎨 **Sleek Modern UI**:
-  - Built with React 18, Chakra UI dark/cyber theme, Framer Motion animations, and Ace Code Editor with multiple syntax modes & themes.
+  - Searchable and filterable review archives.
+  - Detail modal inspection and single-click deletion.
+- 👤 **Custom Gemini API Key Override**:
+  - Configure a personal Google Gemini API key directly from the Profile page.
+- 🎨 **Modern 3D Cyber Theme**:
+  - Designed with obsidian dark backgrounds, sunset-to-violet gradient glows, 3D volumetric code emblems, and frosted glassmorphism.
+  - Embedded **Ace Code Editor** with syntax highlighting, custom themes, and full-screen support.
 
 ---
 
@@ -35,17 +49,18 @@ A full-stack, production-grade code analysis platform powered by **Google Gemini
 ### Frontend
 - **Framework**: React 18 + Vite
 - **UI Library**: Chakra UI + Emotion
-- **Routing**: React Router v6
-- **Code Editor**: React Ace
+- **Routing**: React Router v7
+- **Code Editor**: React Ace (Ace Builds)
 - **State Management**: React Context API (`AuthContext`)
-- **HTTP Client**: Axios with JWT Bearer & `x-api-key` interceptors
+- **HTTP Client**: Axios (with Bearer token & `x-api-key` interceptors)
 - **Icons & Animations**: React Icons, Framer Motion
 
 ### Backend
 - **Runtime**: Node.js + Express.js
-- **Database**: MongoDB with Mongoose ODM
+- **Database**: MongoDB Atlas / MongoDB Compass via Mongoose ODM
 - **Security**: bcryptjs, JSON Web Tokens (`jsonwebtoken`), CORS, dotenv
 - **AI Integration**: Google Generative AI SDK (`@google/generative-ai`)
+- **Hosting**: Render (Single-Service Monorepo Deployment with static SPA fallback)
 
 ---
 
@@ -56,55 +71,54 @@ Code-Reviewer-AI/
 ├── frontend/                        # React 18 + Vite SPA
 │   ├── src/
 │   │   ├── api/
-│   │   │   └── index.js            # Central Axios client with token interceptors
+│   │   │   └── index.js            # Central Axios client with dynamic baseURL & interceptors
 │   │   ├── components/
-│   │   │   ├── CodeEditor.jsx      # React Ace editor wrapper
-│   │   │   ├── Footer.jsx          # App footer
-│   │   │   ├── Logo.jsx            # Cyber `< / >` vector logo
+│   │   │   ├── CodeEditor.jsx      # Ace code editor wrapper with theme & language selectors
+│   │   │   ├── Footer.jsx          # Futuristic footer
+│   │   │   ├── Logo.jsx            # 3D volumetric < / > vector emblem
 │   │   │   ├── Navbar.jsx          # Header with user menu & navigation
 │   │   │   └── ProtectedRoute.jsx  # Route guard for authenticated views
 │   │   ├── constants/
-│   │   │   └── index.js            # Editor themes & language modes
+│   │   │   └── index.js            # Editor themes & supported language configurations
 │   │   ├── context/
-│   │   │   └── AuthContext.jsx     # Auth state provider (login, register, logout)
+│   │   │   └── AuthContext.jsx     # Global authentication provider
 │   │   ├── pages/
-│   │   │   ├── Dashboard.jsx       # Personal statistics & activity overview
+│   │   │   ├── Dashboard.jsx       # Personal statistics & recent review cards
 │   │   │   ├── History.jsx         # Searchable & filterable review records
-│   │   │   ├── Login.jsx           # Sign in view
-│   │   │   ├── Profile.jsx         # Account settings & stats
-│   │   │   ├── Register.jsx        # Sign up view
+│   │   │   ├── Login.jsx           # Glowing cyber authentication view
+│   │   │   ├── Profile.jsx         # User account settings & API key overrides
+│   │   │   ├── Register.jsx        # Account registration view
 │   │   │   └── Studio.jsx          # Main AI Code Studio (Convert, Debug, Quality)
-│   │   ├── App.jsx                 # Route definitions & app layout
-│   │   ├── main.jsx                # DOM mounting
-│   │   └── theme.js                # Chakra UI custom dark theme
+│   │   ├── App.jsx                 # Application layout & routing definitions
+│   │   ├── main.jsx                # React DOM entry point
+│   │   └── theme.js                # Chakra UI custom dark cyber theme
 │   ├── index.html
 │   ├── vite.config.js
 │   └── package.json
 │
 ├── backend/                         # Express REST API
 │   ├── config/
-│   │   └── db.js                   # Mongoose MongoDB connection
+│   │   └── db.js                   # Mongoose MongoDB connection & error handler
 │   ├── controllers/
-│   │   ├── authController.js       # Register, Login, Get Current User
+│   │   ├── authController.js       # Register, Login, Current User profile
 │   │   └── reviewController.js     # AI endpoints, History, Stats, Deletion
 │   ├── middleware/
-│   │   ├── adminMiddleware.js      # Admin role authorization guard
-│   │   └── authMiddleware.js       # JWT validation & req.user attachment
+│   │   ├── adminMiddleware.js      # Admin authorization guard
+│   │   └── authMiddleware.js       # JWT validation & user attachment
 │   ├── models/
 │   │   ├── Review.js               # Review schema with userId reference
 │   │   └── User.js                 # User schema with bcrypt pre-save hash
 │   ├── routes/
-│   │   ├── adminRoutes.js          # Admin-only endpoints
-│   │   ├── authRoutes.js           # /api/auth endpoints
-│   │   └── reviewRoutes.js         # /convert, /debug, /codeQuality, /api/reviews
+│   │   ├── adminRoutes.js          # Admin-only endpoints (/api/admin)
+│   │   ├── authRoutes.js           # Auth routes (/api/auth)
+│   │   └── reviewRoutes.js         # Review routes (/api/reviews, /convert, /debug, /codeQuality)
 │   ├── services/
-│   │   └── geminiService.js        # Gemini API integration with model fallback
-│   ├── index.js                    # Express app configuration & server entry
-│   ├── .env                        # Environment variables (private)
+│   │   └── geminiService.js        # Gemini AI integration with model fallback
+│   ├── index.js                    # Express server entry with static SPA file serving
 │   ├── .env.example                # Example environment template
 │   └── package.json
 │
-└── package.json                    # Monorepo root script runner
+└── package.json                    # Root workspace script runner
 ```
 
 ---
@@ -113,14 +127,14 @@ Code-Reviewer-AI/
 
 ### 1. Prerequisites
 - **Node.js**: v18 or later
-- **MongoDB**: Local MongoDB instance (`mongodb://127.0.0.1:27017`) or a MongoDB Atlas connection URI.
+- **MongoDB**: Local MongoDB instance (`mongodb://127.0.0.1:27017`) or **MongoDB Atlas** Cloud Cluster.
 - **Google Gemini API Key**: Get a free API key at [Google AI Studio](https://aistudio.google.com/app/apikey).
 
 ### 2. Installation
 Clone the repository and install all dependencies:
 ```bash
-git clone <repository-url>
-cd CODE-REVIEWER
+git clone https://github.com/Yash-2808/Code-Reviewer-AI.git
+cd Code-Reviewer-AI
 npm run install-all
 ```
 
@@ -128,25 +142,40 @@ npm run install-all
 Create a `.env` file in the `backend/` directory:
 ```env
 PORT=8000
-MONGODB_URI=mongodb://127.0.0.1:27017/code_reviewer_ai
-JWT_SECRET=super_secret_jwt_key_code_reviewer_ai_2026_change_in_production
+MONGODB_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/code_reviewer_ai?retryWrites=true&w=majority
+JWT_SECRET=your_super_secure_jwt_secret_key_here
 GEMINI_API_KEY=your_google_gemini_api_key_here
 ```
 
-### 4. Running the Application
-Start both backend and frontend concurrently:
+### 4. Running Locally
+Start both backend and frontend development servers concurrently:
 ```bash
-npm start
+npm run dev
 ```
+- **Frontend**: `http://localhost:5173`
+- **Backend API**: `http://localhost:8000`
 
-Or run them individually:
-```bash
-# Terminal 1: Backend (runs on http://localhost:8000)
-npm run start:backend
+---
 
-# Terminal 2: Frontend (runs on http://localhost:5173)
-npm run start:frontend
-```
+## 🌐 Deploying to Render
+
+This repository is pre-configured for seamless single-service deployment on **Render**:
+
+1. Create a new **Web Service** on [Render](https://render.com) and connect your GitHub repository.
+2. Set the following build settings:
+   - **Environment**: `Node`
+   - **Build Command**: `npm run build`
+   - **Start Command**: `npm start`
+3. Add the following **Environment Variables** in Render's `Environment` tab:
+
+| Variable | Description |
+| :--- | :--- |
+| `MONGODB_URI` | Your MongoDB Atlas connection string |
+| `GEMINI_API_KEY` | Your Google Gemini API Key |
+| `JWT_SECRET` | A secure random string for JWT token signatures |
+| `NODE_ENV` | `production` |
+
+4. Click **Deploy**. Render will automatically build the frontend assets, start the Express backend, and serve the full application.
 
 ---
 
@@ -162,13 +191,13 @@ npm run start:frontend
 ### 🤖 AI Code Operations & Reviews
 | Method | Endpoint | Description | Auth Required |
 |---|---|---|---|
-| `POST` | `/convert` | Convert code between languages | Bearer Token |
-| `POST` | `/debug` | Debug code and receive bug breakdowns | Bearer Token |
-| `POST` | `/codeQuality` | Generate quality scores and review reports | Bearer Token |
+| `POST` | `/convert` | Convert source code between programming languages | Bearer Token |
+| `POST` | `/debug` | Debug code and receive actionable bug breakdowns | Bearer Token |
+| `POST` | `/codeQuality` | Generate quality scores, rubrics, and suggestions | Bearer Token |
 | `GET` | `/api/reviews` | List current user's paginated review history | Bearer Token |
 | `GET` | `/api/reviews/stats` | Retrieve aggregate statistics for user dashboard | Bearer Token |
-| `GET` | `/api/reviews/:id` | Fetch specific review by ID (Ownership enforced) | Bearer Token |
-| `DELETE` | `/api/reviews/:id` | Delete specific review (Ownership enforced) | Bearer Token |
+| `GET` | `/api/reviews/:id` | Fetch specific review by ID (User ownership enforced) | Bearer Token |
+| `DELETE` | `/api/reviews/:id` | Delete specific review (User ownership enforced) | Bearer Token |
 
 ### 🛡️ Admin Operations (`/api/admin`)
 | Method | Endpoint | Description | Auth Required |
@@ -178,22 +207,13 @@ npm run start:frontend
 
 ---
 
-## 👑 Creating an Admin User
-To promote a user to `admin`, you can update the user document directly in MongoDB:
-```javascript
-// In mongosh or MongoDB Compass
-use code_reviewer_ai;
-db.users.updateOne({ email: "admin@example.com" }, { $set: { role: "admin" } });
-```
-
----
-
-## 🛡️ Security & Data Isolation
-- **Password Security**: Passwords are hashed using `bcryptjs` with salt work factor 12. Plain passwords are never stored or returned.
-- **Data Isolation**: Every review record stores a strict reference to `userId`. Endpoints check `review.userId.toString() === req.user.userId` before returning or deleting any review. Unauthorized cross-user requests receive a `403 Forbidden` response.
-- **Token Handling**: Tokens are verified using Express middleware. Invalid or expired tokens receive a `401 Unauthorized` response.
+## 🛡️ Security & Privacy
+- **Password Security**: Passwords are encrypted using `bcryptjs` with 12 salt rounds before persisting to MongoDB.
+- **Data Isolation**: All review documents are strictly tied to the owner's `userId`. Unauthorized cross-account access attempts return `403 Forbidden`.
+- **JWT Protection**: Protected routes validate Bearer tokens on every request. Expired or forged tokens return `401 Unauthorized`.
+- **Safe Environment Handling**: Sensitive API keys and connection strings are managed strictly via environment variables and gitignored.
 
 ---
 
 ## 📜 License
-MIT License. Built for developers with ❤️ by the CodeReviewer AI team.
+This project is open-source under the [MIT License](LICENSE).
