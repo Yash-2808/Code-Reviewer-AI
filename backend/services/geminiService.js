@@ -104,18 +104,36 @@ You must respond with ONLY a valid JSON object (no markdown, no code fences, no 
 }
 
 /**
- * AI Code Quality Analysis
+ * AI Code Quality & Complexity Analysis
  */
 async function qualityCheckService(code, customApiKey) {
   const genAI = getGeminiClient(customApiKey);
-  const systemPrompt = `You are an expert code quality reviewer. Analyze the provided code for readability, performance (efficiency), security, and compliance with best practices.
-You must respond with ONLY a valid JSON object (no markdown, no code fences, no extra text) containing the following keys:
-- "score": number (an overall score between 0 and 100)
-- "categories": an object with keys: "readability", "efficiency", "security", "bestPractices". Each category must have:
-  - "score": number (0 to 10)
-  - "feedback": string (brief explanation of the score and suggestions)
-- "improvements": array of strings (actionable items to improve the code)
-- "summary": string (a short markdown-formatted summary of the review)`;
+  const systemPrompt = `You are a Principal Software Architect and Code Analysis AI. Perform a rigorous, in-depth Code Quality & Complexity Audit on the provided code.
+Analyze Time Complexity, Space Complexity, Maintainability, Security, Performance, and Best Practices.
+
+You must respond with ONLY a valid JSON object (no markdown, no code fences, no extra text outside JSON) containing the following structure:
+{
+  "score": number (overall quality score from 0 to 100),
+  "complexity": {
+    "time": string (e.g., "O(n)", "O(n log n)", "O(n²)", "O(1)"),
+    "timeDetails": string (concise breakdown of loops, recursions, and why this is the time complexity),
+    "space": string (e.g., "O(1) Auxiliary", "O(n) Memory", "O(k)"),
+    "spaceDetails": string (breakdown of auxiliary allocations, stack frames, and memory overhead),
+    "cyclomaticComplexity": string (e.g., "Low (Rating: 2)", "Moderate (Rating: 6)", "High (Rating: 12+)"),
+    "maintainabilityIndex": string (e.g., "90/100 (High)", "72/100 (Moderate)", "45/100 (Complex)")
+  },
+  "categories": {
+    "readability": { "score": number (0-10), "feedback": string },
+    "efficiency": { "score": number (0-10), "feedback": string },
+    "security": { "score": number (0-10), "feedback": string },
+    "bestPractices": { "score": number (0-10), "feedback": string },
+    "scalability": { "score": number (0-10), "feedback": string }
+  },
+  "strengths": [ string, string ],
+  "improvements": [ string, string ],
+  "optimizedCode": string or null (refactored code snippet if improvements or complexity optimizations are possible),
+  "summary": string (a concise markdown summary of the audit)
+}`;
 
   const responseText = await generateContent(genAI, systemPrompt, code);
   const cleaned = stripMarkdownFences(responseText);

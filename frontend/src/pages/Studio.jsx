@@ -36,7 +36,7 @@ import {
 import CodeEditor from "../components/CodeEditor";
 import { MdArrowDropDown } from "react-icons/md";
 import { VscDebugAll } from "react-icons/vsc";
-import { BsFillPatchCheckFill, BsCheck2Circle, BsShieldCheck } from "react-icons/bs";
+import { BsFillPatchCheckFill, BsCheck2Circle, BsShieldCheck, BsCpu, BsGraphUp } from "react-icons/bs";
 import { CgArrowsExchange } from "react-icons/cg";
 import {
   FaCopy,
@@ -46,6 +46,9 @@ import {
   FaBolt,
   FaRocket,
   FaTrashAlt,
+  FaClock,
+  FaMemory,
+  FaAward,
 } from "react-icons/fa";
 import { HiSparkles } from "react-icons/hi";
 import { codeModes } from "../constants";
@@ -806,7 +809,8 @@ const Studio = ({ editorTheme = "twilight" }) => {
                         </Text>
                       </VStack>
                     ) : qualityResult ? (
-                      <Flex direction="column" gap="4" maxH="480px" overflowY="auto" pr="1">
+                      <Flex direction="column" gap="4" maxH="550px" overflowY="auto" pr="1">
+                        {/* 1. Score & Category Breakdown */}
                         {(() => {
                           const scoreInfo = getScoreDetails(qualityResult.score);
                           return (
@@ -831,15 +835,15 @@ const Studio = ({ editorTheme = "twilight" }) => {
 
                               <GridItem pl={{ md: "2" }}>
                                 <Heading size="xs" color="#00D2D3" mb="3" textTransform="uppercase" letterSpacing="0.06em">
-                                  Category Breakdown
+                                  Quality Category Breakdown
                                 </Heading>
-                                <Stack spacing="3">
+                                <Stack spacing="2.5">
                                   {qualityResult.categories && Object.entries(qualityResult.categories).map(([key, value]) => {
                                     const catScore = value.score;
                                     const catColor = catScore >= 8 ? "#00D2D3" : catScore >= 5 ? "#FECA57" : "#FF3366";
                                     return (
                                       <Box key={key}>
-                                        <Flex justify="space-between" align="center" mb="1">
+                                        <Flex justify="space-between" align="center" mb="0.5">
                                           <Text fontSize="xs" textTransform="capitalize" fontWeight="700" color="#E2E8F0">
                                             {key === "bestPractices" ? "Best Practices" : key}
                                           </Text>
@@ -848,7 +852,7 @@ const Studio = ({ editorTheme = "twilight" }) => {
                                           </Badge>
                                         </Flex>
                                         <Progress value={value.score * 10} size="xs" borderRadius="full" bg="rgba(255,255,255,0.08)" sx={{ "& > div": { backgroundColor: catColor } }} />
-                                        <Text fontSize="10px" color="gray.400" mt="1">{value.feedback}</Text>
+                                        <Text fontSize="10px" color="gray.400" mt="0.5">{value.feedback}</Text>
                                       </Box>
                                     );
                                   })}
@@ -858,20 +862,127 @@ const Studio = ({ editorTheme = "twilight" }) => {
                           );
                         })()}
 
+                        {/* 2. Big-O Complexity & Architecture Metrics */}
+                        {qualityResult.complexity && (
+                          <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap="3">
+                            {/* Time Complexity Card */}
+                            <Box bg="rgba(14, 20, 44, 0.85)" p="3.5" borderRadius="xl" border="1px solid rgba(0, 242, 254, 0.3)" boxShadow="0 4px 15px rgba(0, 242, 254, 0.05)">
+                              <Flex justify="space-between" align="center" mb="2">
+                                <HStack spacing="2">
+                                  <Box color="#00F2FE" fontSize="14px"><FaClock /></Box>
+                                  <Text fontSize="xs" fontWeight="800" textTransform="uppercase" color="#00F2FE" letterSpacing="0.05em">
+                                    Time Complexity
+                                  </Text>
+                                </HStack>
+                                <Badge px="2.5" py="0.5" borderRadius="md" bg="rgba(0, 242, 254, 0.2)" color="#00F2FE" border="1px solid rgba(0, 242, 254, 0.4)" fontSize="xs" fontWeight="900" fontFamily="'JetBrains Mono', monospace">
+                                  {qualityResult.complexity.time || "O(N)"}
+                                </Badge>
+                              </Flex>
+                              <Text fontSize="xs" color="#CBD5E1" lineHeight="1.5">
+                                {qualityResult.complexity.timeDetails || "Estimated execution scale based on iteration depth and algorithm structure."}
+                              </Text>
+                            </Box>
+
+                            {/* Space Complexity Card */}
+                            <Box bg="rgba(14, 20, 44, 0.85)" p="3.5" borderRadius="xl" border="1px solid rgba(0, 210, 211, 0.3)" boxShadow="0 4px 15px rgba(0, 210, 211, 0.05)">
+                              <Flex justify="space-between" align="center" mb="2">
+                                <HStack spacing="2">
+                                  <Box color="#00D2D3" fontSize="14px"><FaMemory /></Box>
+                                  <Text fontSize="xs" fontWeight="800" textTransform="uppercase" color="#00D2D3" letterSpacing="0.05em">
+                                    Space Complexity
+                                  </Text>
+                                </HStack>
+                                <Badge px="2.5" py="0.5" borderRadius="md" bg="rgba(0, 210, 211, 0.2)" color="#00D2D3" border="1px solid rgba(0, 210, 211, 0.4)" fontSize="xs" fontWeight="900" fontFamily="'JetBrains Mono', monospace">
+                                  {qualityResult.complexity.space || "O(1)"}
+                                </Badge>
+                              </Flex>
+                              <Text fontSize="xs" color="#CBD5E1" lineHeight="1.5">
+                                {qualityResult.complexity.spaceDetails || "Memory footprint covering auxiliary variables, buffers, and call stack overhead."}
+                              </Text>
+                            </Box>
+
+                            {/* Code Metrics / Maintainability */}
+                            {(qualityResult.complexity.cyclomaticComplexity || qualityResult.complexity.maintainabilityIndex) && (
+                              <Box gridColumn={{ md: "span 2" }} bg="rgba(14, 20, 44, 0.75)" p="3" borderRadius="xl" border="1px solid rgba(112, 101, 240, 0.25)">
+                                <Flex justify="space-around" align="center" flexWrap="wrap" gap="2">
+                                  {qualityResult.complexity.cyclomaticComplexity && (
+                                    <HStack spacing="2">
+                                      <Box color="#FECA57" fontSize="14px"><BsGraphUp /></Box>
+                                      <Text fontSize="xs" color="gray.300" fontWeight="700">Cyclomatic Complexity:</Text>
+                                      <Badge px="2" py="0.5" borderRadius="md" bg="rgba(254, 202, 87, 0.2)" color="#FECA57" fontWeight="800">
+                                        {qualityResult.complexity.cyclomaticComplexity}
+                                      </Badge>
+                                    </HStack>
+                                  )}
+                                  {qualityResult.complexity.maintainabilityIndex && (
+                                    <HStack spacing="2">
+                                      <Box color="#10B981" fontSize="14px"><BsShieldCheck /></Box>
+                                      <Text fontSize="xs" color="gray.300" fontWeight="700">Maintainability Index:</Text>
+                                      <Badge px="2" py="0.5" borderRadius="md" bg="rgba(16, 185, 129, 0.2)" color="#10B981" fontWeight="800">
+                                        {qualityResult.complexity.maintainabilityIndex}
+                                      </Badge>
+                                    </HStack>
+                                  )}
+                                </Flex>
+                              </Box>
+                            )}
+                          </Grid>
+                        )}
+
+                        {/* 3. Strengths */}
+                        {qualityResult.strengths && qualityResult.strengths.length > 0 && (
+                          <VStack align="stretch" spacing="2">
+                            <Text fontSize="xs" fontWeight="800" textTransform="uppercase" color="#10B981" letterSpacing="0.06em">
+                              KEY STRENGTHS:
+                            </Text>
+                            {qualityResult.strengths.map((strength, index) => (
+                              <HStack key={index} p="2.5" borderRadius="lg" bg="rgba(16, 185, 129, 0.08)" border="1px solid rgba(16, 185, 129, 0.2)" align="start">
+                                <Box color="#10B981" flexShrink={0} mt="0.5"><BsCheck2Circle /></Box>
+                                <Text fontSize="xs" color="#F1F5F9" fontWeight="600">{strength}</Text>
+                              </HStack>
+                            ))}
+                          </VStack>
+                        )}
+
+                        {/* 4. Actionable Improvements */}
                         {qualityResult.improvements && qualityResult.improvements.length > 0 && (
                           <VStack align="stretch" spacing="2">
                             <Text fontSize="xs" fontWeight="800" textTransform="uppercase" color="#00D2D3" letterSpacing="0.06em">
-                              RECOMMENDATIONS:
+                              OPTIMIZATION RECOMMENDATIONS:
                             </Text>
                             {qualityResult.improvements.map((improvement, index) => (
                               <HStack key={index} className="hero-improvement-card" align="start">
-                                <Box color="#00D2D3" flexShrink={0} mt="0.5"><BsCheck2Circle /></Box>
+                                <Box color="#00D2D3" flexShrink={0} mt="0.5"><HiSparkles /></Box>
                                 <Text fontSize="sm" color="#F1F5F9" fontWeight="600">{improvement}</Text>
                               </HStack>
                             ))}
                           </VStack>
                         )}
 
+                        {/* 5. Optimized Code Recommendation */}
+                        {qualityResult.optimizedCode && (
+                          <Flex direction="column" gap="2" mt="1">
+                            <Flex justify="space-between" align="center">
+                              <Badge px="2.5" py="0.5" borderRadius="md" bg="rgba(0, 242, 254, 0.15)" color="#00F2FE" border="1px solid rgba(0, 242, 254, 0.35)" fontWeight="800">
+                                Optimized Refactoring
+                              </Badge>
+                              <Button size="xs" leftIcon={copiedOutput ? <FaCheck /> : <FaCopy />} colorScheme={copiedOutput ? "green" : "gray"} variant="outline" onClick={() => handleCopy(qualityResult.optimizedCode, setCopiedOutput)}>
+                                {copiedOutput ? "Copied" : "Copy Optimized Code"}
+                              </Button>
+                            </Flex>
+                            <Box className="hero-editor-container">
+                              <CodeEditor
+                                value={qualityResult.optimizedCode}
+                                mode={sourceLang}
+                                theme={editorTheme}
+                                readOnly={true}
+                                height="260px"
+                              />
+                            </Box>
+                          </Flex>
+                        )}
+
+                        {/* 6. Executive Summary */}
                         {qualityResult.summary && (
                           <Box bg="rgba(18, 24, 48, 0.8)" p="4" borderRadius="xl" border="1px solid rgba(112, 101, 240, 0.2)">
                             <HStack spacing="2" mb="2">
