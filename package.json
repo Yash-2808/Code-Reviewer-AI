@@ -4,7 +4,8 @@
   "description": "CodeReviewer AI - Intelligent Code Analysis & Review Platform",
   "main": "backend/index.js",
   "scripts": {
-    "build": "npm install && npm --prefix frontend install && npm --prefix frontend run build",
+    "postinstall": "npm --prefix frontend install && npm --prefix frontend run build",
+    "build": "npm --prefix frontend install && npm --prefix frontend run build",
     "start": "node backend/index.js",
     "install-all": "npm install && npm --prefix backend install && npm --prefix frontend install",
     "dev:backend": "npm --prefix backend run dev",
