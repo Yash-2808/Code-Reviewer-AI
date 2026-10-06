@@ -181,9 +181,6 @@ const Dashboard = () => {
                 </Badge>
               )}
             </HStack>
-            <Text fontSize="xs" color="gray.400" fontWeight="500">
-              {user?.email} • Track your code transformations, bug patches, and quality scorecard metrics
-            </Text>
           </VStack>
 
           <Button
