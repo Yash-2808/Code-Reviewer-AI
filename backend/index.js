@@ -44,13 +44,20 @@ app.post("/debug", authMiddleware, debugCode);
 app.post("/codeQuality", authMiddleware, qualityCheck);
 
 // Serve Frontend static production assets if built
-const frontendDistPath = path.join(__dirname, "../frontend/dist");
-if (fs.existsSync(frontendDistPath)) {
+const possibleDistPaths = [
+  path.join(__dirname, "../frontend/dist"),
+  path.join(process.cwd(), "frontend/dist"),
+  path.join(__dirname, "dist"),
+];
+
+let frontendDistPath = possibleDistPaths.find((p) => fs.existsSync(p) && fs.existsSync(path.join(p, "index.html")));
+
+if (frontendDistPath) {
+  console.log(`Serving static frontend UI from: ${frontendDistPath}`);
   app.use(express.static(frontendDistPath));
 
   // Catch-all route to serve SPA frontend index.html for client-side routing
   app.get("*", (req, res, next) => {
-    // If request starts with /api or known endpoints, skip to 404
     if (
       req.path.startsWith("/api") ||
       req.path === "/convert" ||
@@ -62,7 +69,7 @@ if (fs.existsSync(frontendDistPath)) {
     res.sendFile(path.join(frontendDistPath, "index.html"));
   });
 } else {
-  // If frontend is not built, root welcome message
+  console.warn("Static frontend dist not found. Serving API welcome route.");
   app.get("/", (req, res) => {
     res.send("Welcome to the Code Reviewer AI Backend API 🎉 (Powered by Google Gemini & MongoDB)");
   });
