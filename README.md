@@ -10,7 +10,7 @@
 ![Google Gemini](https://img.shields.io/badge/Google_Gemini_AI-4285F4?style=for-the-badge&logo=google&logoColor=white)
 ![Render](https://img.shields.io/badge/Render-Hosted-46E3B7?style=for-the-badge&logo=render&logoColor=white)
 
-A full-stack, production-grade AI code analysis platform powered by **Google Gemini AI**. CodeReviewer AI provides real-time AI code conversion, debugging, and code quality scoring alongside a secure **Authentication & Authorization** system, private review histories, personalized developer dashboards, and cloud deployment on **Render**.
+A full-stack, production-grade AI code analysis platform powered by **Google Gemini AI**. CodeReviewer AI provides real-time intelligent programming language auto-detection, Big-O algorithmic complexity analysis, automated bug debugging, code quality scoring, and secure **Authentication & Authorization** hosted on **Render**.
 
 [Live Demo](https://code-reviewer-ai-1-vpic.onrender.com) • [Report Bug](https://github.com/Yash-2808/Code-Reviewer-AI/issues) • [Request Feature](https://github.com/Yash-2808/Code-Reviewer-AI/issues)
 
@@ -20,27 +20,38 @@ A full-stack, production-grade AI code analysis platform powered by **Google Gem
 
 ## ✨ Key Features
 
-- 🔐 **Authentication & Authorization**:
-  - Secure registration & login with **bcryptjs** password hashing (12 salt rounds).
+- ⚡ **Real-Time Language Auto-Detection**:
+  - Automatically identifies programming languages as you type or paste code into the editor.
+  - Supports **C / C++**, **Python**, **Java**, **C#**, **TypeScript**, **JavaScript**, **HTML**, **CSS**, **SQL**, **PHP**, **Ruby**, **JSON**, and **XML**.
+  - Dynamically updates Ace Editor syntax highlighting and sets the conversion source.
+
+- 📐 **Big-O Algorithmic Complexity & Architecture Audit**:
+  - ⏱️ **Time Complexity**: Evaluates loop bounds, nested iterations, and recursion (e.g., `O(1)`, `O(n)`, `O(n log n)`, `O(n²)`).
+  - 💾 **Space Complexity**: Evaluates auxiliary heap memory, stack frames, and buffer allocations (e.g., `O(1) Auxiliary`, `O(n) Memory`).
+  - 📊 **Code Health Metrics**: Computes **Cyclomatic Complexity** and **Maintainability Index**.
+  - 🎯 **5-Category Quality Rubric**: Scores **Readability**, **Efficiency**, **Security**, **Best Practices**, and **Scalability** (0–10 each).
+  - 🚀 **Optimized Code Refactoring**: Generates production-ready refactored solutions with 1-click copy.
+
+- 🐛 **AI Code Debugger**:
+  - In-depth detection of logical bugs, syntax errors, and runtime edge cases.
+  - Color-coded severity badges (*High / Medium / Low*) and line-number pinpointing.
+  - Automated patch generation and markdown explanations.
+
+- 🔄 **AI Code Converter**:
+  - Cross-language code translation preserving logic, variable conventions, and idiomatic language patterns.
+
+- 🔐 **Authentication & Security**:
+  - **bcryptjs** password hashing (12 salt rounds).
   - Stateless **JWT (JSON Web Token)** Bearer token authorization.
   - Role-based access control (`user` and `admin` roles).
-  - Strict user data isolation — review records and activity histories are strictly segregated per user account.
-- ⚡ **AI-Powered Code Studio**:
-  - **Code Converter**: Seamlessly convert source code across languages (JavaScript, Python, C++, Java, Rust, Go, TypeScript, and more).
-  - **Code Debugger**: Deep bug detection with line numbers, severity tags, root-cause explanations, and instant fixes.
-  - **Code Quality Assessment**: Multi-category scorecard metrics covering readability, performance, security, maintainability, and best practices.
-  - Multi-model resilience with automated fallback across Gemini model tiers.
-- 📊 **Developer Dashboard & Statistics**:
-  - Total reviews performed, conversion metrics, debugging reports, and average code quality scores.
-  - Quick action shortcuts and real-time activity feed.
-- 📜 **Private Review History**:
-  - Searchable and filterable review archives.
-  - Detail modal inspection and single-click deletion.
-- 👤 **Custom Gemini API Key Override**:
-  - Configure a personal Google Gemini API key directly from the Profile page.
+  - Strict user data isolation — reviews and history are isolated per user account.
+
+- 📊 **Developer Dashboard & Private Review History**:
+  - Personal analytics, review counters, quality score averages, and recent activity cards.
+  - Searchable and filterable history archive with detail modal views.
+
 - 🎨 **Modern 3D Cyber Theme**:
-  - Designed with obsidian dark backgrounds, sunset-to-violet gradient glows, 3D volumetric code emblems, and frosted glassmorphism.
-  - Embedded **Ace Code Editor** with syntax highlighting, custom themes, and full-screen support.
+  - Dark obsidian interface (`#040612`), vibrant sunset-to-violet gradient glows, 3D volumetric code emblems, and responsive split-panel layouts.
 
 ---
 
@@ -79,7 +90,7 @@ Code-Reviewer-AI/
 │   │   │   ├── Navbar.jsx          # Header with user menu & navigation
 │   │   │   └── ProtectedRoute.jsx  # Route guard for authenticated views
 │   │   ├── constants/
-│   │   │   └── index.js            # Editor themes & supported language configurations
+│   │   │   └── index.js            # Language definitions & detectLanguage engine
 │   │   ├── context/
 │   │   │   └── AuthContext.jsx     # Global authentication provider
 │   │   ├── pages/
@@ -159,10 +170,10 @@ npm run dev
 
 ## 🌐 Deploying to Render
 
-This repository is pre-configured for seamless single-service deployment on **Render**:
+This repository is pre-configured for single-service monorepo deployment on **Render**:
 
 1. Create a new **Web Service** on [Render](https://render.com) and connect your GitHub repository.
-2. Set the following build settings:
+2. Configure the build settings:
    - **Environment**: `Node`
    - **Build Command**: `npm run build`
    - **Start Command**: `npm start`
@@ -175,7 +186,7 @@ This repository is pre-configured for seamless single-service deployment on **Re
 | `JWT_SECRET` | A secure random string for JWT token signatures |
 | `NODE_ENV` | `production` |
 
-4. Click **Deploy**. Render will automatically build the frontend assets, start the Express backend, and serve the full application.
+4. Click **Deploy**. Render will automatically build the Vite frontend bundle, start the Express backend, and serve the full application.
 
 ---
 
@@ -193,7 +204,7 @@ This repository is pre-configured for seamless single-service deployment on **Re
 |---|---|---|---|
 | `POST` | `/convert` | Convert source code between programming languages | Bearer Token |
 | `POST` | `/debug` | Debug code and receive actionable bug breakdowns | Bearer Token |
-| `POST` | `/codeQuality` | Generate quality scores, rubrics, and suggestions | Bearer Token |
+| `POST` | `/codeQuality` | Generate quality scores, Big-O complexity, rubrics, and suggestions | Bearer Token |
 | `GET` | `/api/reviews` | List current user's paginated review history | Bearer Token |
 | `GET` | `/api/reviews/stats` | Retrieve aggregate statistics for user dashboard | Bearer Token |
 | `GET` | `/api/reviews/:id` | Fetch specific review by ID (User ownership enforced) | Bearer Token |
