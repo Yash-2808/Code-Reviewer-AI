@@ -51,7 +51,7 @@ import {
   FaAward,
 } from "react-icons/fa";
 import { HiSparkles } from "react-icons/hi";
-import { codeModes } from "../constants";
+import { codeModes, detectLanguage } from "../constants";
 import { getConvertedCode, getDebugResponse, getQualityCheck } from "../api";
 import { toast } from "react-toastify";
 
@@ -205,6 +205,14 @@ const Studio = ({ editorTheme = "twilight" }) => {
       setCode(snippet.code);
       setSourceLang(snippet.lang);
       toast.info(`Loaded: ${snippet.name}`);
+    }
+  };
+
+  const handleCodeChange = (newCode) => {
+    setCode(newCode);
+    const detected = detectLanguage(newCode);
+    if (detected && detected !== sourceLang) {
+      setSourceLang(detected);
     }
   };
 
@@ -397,7 +405,7 @@ const Studio = ({ editorTheme = "twilight" }) => {
             <Box className="hero-editor-container">
               <CodeEditor
                 value={code}
-                onChange={(val) => setCode(val)}
+                onChange={handleCodeChange}
                 mode={sourceLang}
                 theme={editorTheme}
                 height="560px"
