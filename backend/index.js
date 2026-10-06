@@ -1,8 +1,9 @@
-const express = require("express");
-require("dotenv").config();
-const cors = require("cors");
 const path = require("path");
 const fs = require("fs");
+require("dotenv").config();
+require("dotenv").config({ path: path.join(__dirname, ".env") });
+const express = require("express");
+const cors = require("cors");
 const connectDB = require("./config/db");
 
 // Import routes

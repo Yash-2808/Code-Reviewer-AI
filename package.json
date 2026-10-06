@@ -2,17 +2,24 @@
   "name": "code-reviewer-ai",
   "version": "1.0.0",
   "description": "CodeReviewer AI - Intelligent Code Analysis & Review Platform",
+  "main": "backend/index.js",
   "scripts": {
-    "build": "cd backend && npm install && cd ../frontend && npm install && npm run build",
-    "start": "cd backend && node index.js",
-    "install:backend": "cd backend && npm install",
-    "install:frontend": "cd frontend && npm install",
-    "install-all": "npm install && npm run install:backend && npm run install:frontend",
-    "dev:backend": "cd backend && npm start",
-    "dev:frontend": "cd frontend && npm run dev",
+    "build": "npm install && npm --prefix frontend install && npm --prefix frontend run build",
+    "start": "node backend/index.js",
+    "install-all": "npm install && npm --prefix backend install && npm --prefix frontend install",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\""
   },
   "dependencies": {
-    "concurrently": "^8.2.2"
+    "@google/generative-ai": "^0.24.1",
+    "axios": "^1.4.0",
+    "bcryptjs": "^3.0.3",
+    "concurrently": "^8.2.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.11.0"
   }
 }
