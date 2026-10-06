@@ -1,6 +1,8 @@
 const express = require("express");
 require("dotenv").config();
 const cors = require("cors");
+const path = require("path");
+const fs = require("fs");
 const connectDB = require("./config/db");
 
 // Import routes
@@ -25,9 +27,9 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 
-// Root Health Check Route
-app.get("/", (req, res) => {
-  res.send("Welcome to the Code Reviewer AI Backend API 🎉 (Powered by Google Gemini & MongoDB)");
+// API Health Check Route
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok", message: "Code Reviewer AI Backend API is healthy 🚀" });
 });
 
 // Mount modular API routes
@@ -40,7 +42,32 @@ app.post("/convert", authMiddleware, convertCode);
 app.post("/debug", authMiddleware, debugCode);
 app.post("/codeQuality", authMiddleware, qualityCheck);
 
-// 404 Handler for undefined routes
+// Serve Frontend static production assets if built
+const frontendDistPath = path.join(__dirname, "../frontend/dist");
+if (fs.existsSync(frontendDistPath)) {
+  app.use(express.static(frontendDistPath));
+
+  // Catch-all route to serve SPA frontend index.html for client-side routing
+  app.get("*", (req, res, next) => {
+    // If request starts with /api or known endpoints, skip to 404
+    if (
+      req.path.startsWith("/api") ||
+      req.path === "/convert" ||
+      req.path === "/debug" ||
+      req.path === "/codeQuality"
+    ) {
+      return next();
+    }
+    res.sendFile(path.join(frontendDistPath, "index.html"));
+  });
+} else {
+  // If frontend is not built, root welcome message
+  app.get("/", (req, res) => {
+    res.send("Welcome to the Code Reviewer AI Backend API 🎉 (Powered by Google Gemini & MongoDB)");
+  });
+}
+
+// 404 Handler for undefined API routes
 app.use((req, res) => {
   res.status(404).json({ error: `Route not found: ${req.method} ${req.originalUrl}` });
 });

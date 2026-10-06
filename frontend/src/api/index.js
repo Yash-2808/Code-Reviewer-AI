@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: import.meta.env.VITE_APP_BACKEND_API || "http://localhost:8000",
+  baseURL: import.meta.env.VITE_APP_BACKEND_API || (import.meta.env.PROD ? "" : "http://localhost:8000"),
 });
 
 // Request Interceptor: Automatically attach JWT Bearer token and custom Gemini x-api-key
