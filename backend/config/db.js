@@ -2,7 +2,11 @@ const mongoose = require("mongoose");
 
 const connectDB = async () => {
   try {
-    const connUri = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/code_reviewer_ai";
+    const connUri =
+      process.env.MONGODB_URI ||
+      process.env.MONGO_URI ||
+      process.env.DATABASE_URL ||
+      "mongodb://127.0.0.1:27017/code_reviewer_ai";
     
     // Mask credentials for clean logging if using Atlas URI
     const maskedUri = connUri.replace(/\/\/([^:]+):([^@]+)@/, "//***:***@");
