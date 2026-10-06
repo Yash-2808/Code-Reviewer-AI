@@ -29,9 +29,8 @@ const connectDB = async () => {
 
     return conn;
   } catch (error) {
-    console.error(`MongoDB Connection Error: ${error.message}`);
-    console.error("Please check your MONGODB_URI in backend/.env");
-    process.exit(1);
+    console.error(`MongoDB Initial Connection Error: ${error.message}`);
+    console.error("Please ensure MONGODB_URI environment variable is configured in Render Settings.");
   }
 };
 
