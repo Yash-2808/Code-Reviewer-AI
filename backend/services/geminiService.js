@@ -17,54 +17,56 @@ function getGeminiClient(customApiKey) {
  */
 async function generateContent(genAI, systemPrompt, userPrompt) {
   const candidateModels = [
-    "gemini-flash-latest",
-    "gemini-3.8-flash",
     "gemini-3.5-flash-lite",
+    "gemini-flash-lite-latest",
+    "gemini-flash-latest",
     "gemini-pro-latest",
   ];
   let lastError = null;
 
   for (const modelName of candidateModels) {
-    for (let attempt = 1; attempt <= 2; attempt++) {
-      try {
-        const model = genAI.getGenerativeModel({ model: modelName });
-        const result = await model.generateContent({
-          contents: [
-            {
-              role: "user",
-              parts: [{ text: `${systemPrompt}\n\n---\n\nUser Input:\n${userPrompt}` }],
-            },
-          ],
-          generationConfig: {
-            temperature: 0.3,
+    try {
+      const model = genAI.getGenerativeModel({ model: modelName });
+
+      // Enforce a 25-second per-model timeout so hung models don't delay the user
+      const generatePromise = model.generateContent({
+        contents: [
+          {
+            role: "user",
+            parts: [{ text: `${systemPrompt}\n\n---\n\nUser Input:\n${userPrompt}` }],
           },
-        });
-        return result.response.text();
-      } catch (err) {
-        lastError = err;
-        const errMsg = err.message || "";
-        const isAuthError =
-          errMsg.includes("401") ||
-          errMsg.includes("403") ||
-          errMsg.includes("API_KEY_INVALID") ||
-          errMsg.includes("ACCESS_TOKEN_TYPE_UNSUPPORTED") ||
-          err.status === 401 ||
-          err.status === 403;
+        ],
+        generationConfig: {
+          temperature: 0.2,
+        },
+      });
 
-        if (isAuthError) {
-          throw new Error(
-            "Invalid Gemini API Key or authentication failed. Please provide a valid API key from Google AI Studio (starting with 'AIzaSy')."
-          );
-        }
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error(`Model ${modelName} request timed out after 25s`)), 25000)
+      );
 
-        // If 503 (high demand) or 429 (rate limit), wait briefly and retry or try next candidate model
-        if (errMsg.includes("503") || errMsg.includes("429") || err.status === 503 || err.status === 429) {
-          await new Promise((resolve) => setTimeout(resolve, 800 * attempt));
-        } else {
-          // If error is not a transient capacity error, move to next model
-          break;
-        }
+      const result = await Promise.race([generatePromise, timeoutPromise]);
+      return result.response.text();
+    } catch (err) {
+      lastError = err;
+      const errMsg = err.message || "";
+      const isAuthError =
+        errMsg.includes("401") ||
+        errMsg.includes("403") ||
+        errMsg.includes("API_KEY_INVALID") ||
+        errMsg.includes("ACCESS_TOKEN_TYPE_UNSUPPORTED") ||
+        err.status === 401 ||
+        err.status === 403;
+
+      if (isAuthError) {
+        throw new Error(
+          "Invalid Gemini API Key or authentication failed. Please provide a valid API key from Google AI Studio (starting with 'AIzaSy')."
+        );
       }
+
+      console.warn(
+        `[Gemini Fallback] Model ${modelName} failed (${errMsg.slice(0, 80)}). Failing over immediately to next model...`
+      );
     }
   }
 
