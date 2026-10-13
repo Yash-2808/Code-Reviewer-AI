@@ -51,6 +51,9 @@ const convertCode = async (req, res) => {
         error: "Gemini API key is missing. Please set it in the backend .env or provide it in the frontend settings.",
       });
     }
+    if (error.message && error.message.includes("Invalid Gemini API Key")) {
+      return res.status(401).json({ error: error.message });
+    }
     return res.status(500).json({
       error: error.message || "Something went wrong during conversion.",
     });
@@ -92,6 +95,9 @@ const debugCode = async (req, res) => {
         error: "Gemini API key is missing. Please set it in the backend .env or provide it in the frontend settings.",
       });
     }
+    if (error.message && error.message.includes("Invalid Gemini API Key")) {
+      return res.status(401).json({ error: error.message });
+    }
     return res.status(500).json({
       error: error.message || "Something went wrong during debugging.",
     });
@@ -132,6 +138,9 @@ const qualityCheck = async (req, res) => {
       return res.status(401).json({
         error: "Gemini API key is missing. Please set it in the backend .env or provide it in the frontend settings.",
       });
+    }
+    if (error.message && error.message.includes("Invalid Gemini API Key")) {
+      return res.status(401).json({ error: error.message });
     }
     return res.status(500).json({
       error: error.message || "Something went wrong during quality check.",

@@ -16,7 +16,12 @@ function getGeminiClient(customApiKey) {
  * Helper to call Gemini model with automatic fallback and retry on transient 503/429 errors
  */
 async function generateContent(genAI, systemPrompt, userPrompt) {
-  const candidateModels = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-3.5-flash"];
+  const candidateModels = [
+    "gemini-flash-latest",
+    "gemini-3.8-flash",
+    "gemini-3.5-flash-lite",
+    "gemini-pro-latest",
+  ];
   let lastError = null;
 
   for (const modelName of candidateModels) {
@@ -37,11 +42,26 @@ async function generateContent(genAI, systemPrompt, userPrompt) {
         return result.response.text();
       } catch (err) {
         lastError = err;
+        const errMsg = err.message || "";
+        const isAuthError =
+          errMsg.includes("401") ||
+          errMsg.includes("403") ||
+          errMsg.includes("API_KEY_INVALID") ||
+          errMsg.includes("ACCESS_TOKEN_TYPE_UNSUPPORTED") ||
+          err.status === 401 ||
+          err.status === 403;
+
+        if (isAuthError) {
+          throw new Error(
+            "Invalid Gemini API Key or authentication failed. Please provide a valid API key from Google AI Studio (starting with 'AIzaSy')."
+          );
+        }
+
         // If 503 (high demand) or 429 (rate limit), wait briefly and retry or try next candidate model
-        if (err.message?.includes("503") || err.message?.includes("429") || err.status === 503) {
+        if (errMsg.includes("503") || errMsg.includes("429") || err.status === 503 || err.status === 429) {
           await new Promise((resolve) => setTimeout(resolve, 800 * attempt));
         } else {
-          // If error is not a transient capacity error (e.g. invalid key), rethrow immediately
+          // If error is not a transient capacity error, move to next model
           break;
         }
       }
