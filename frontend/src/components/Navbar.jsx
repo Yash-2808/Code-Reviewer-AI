@@ -192,21 +192,6 @@ const Navbar = ({ editorTheme, setEditorTheme }) => {
 
         {/* Right Side Navigation Tools */}
         <HStack spacing={{ base: "2", md: "3" }}>
-          {/* Status Beacon */}
-          <HStack
-            spacing="2"
-            bg="rgba(0, 242, 254, 0.08)"
-            px="3"
-            py="1.5"
-            borderRadius="full"
-            border="1px solid rgba(0, 242, 254, 0.25)"
-            display={{ base: "none", lg: "flex" }}
-          >
-            <Box className="hero-status-beacon" />
-            <Text fontSize="10px" color="#00F2FE" fontWeight="800" letterSpacing="0.05em">
-              AI ONLINE
-            </Text>
-          </HStack>
 
           {/* Theme Selector (if available) */}
           {setEditorTheme && (
